@@ -148,6 +148,22 @@
   .rates button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 6px;font-weight:800;font-size:.78rem}
   .rates button .re{font-size:24px;display:block;margin-bottom:5px}
   .rates button:active{transform:scale(.97)}
+  #focus .ov-main{justify-content:flex-start;overflow-y:auto;padding-top:4px}
+  .fGuide{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 18px;
+    box-shadow:0 6px 20px rgba(120,90,50,.07)}
+  .fGoal{font-size:.9rem;color:#4a423a;line-height:1.5;margin-bottom:14px}
+  .fGoal b{color:var(--ink)}
+  .gsteps-label{font-size:.68rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--mut2);margin-bottom:4px}
+  .gstep{display:flex;gap:11px;margin:11px 0}
+  .gstep .sn{width:24px;height:24px;flex:none;border-radius:50%;background:var(--grad);color:#fff;
+    font-weight:800;font-size:.78rem;display:grid;place-items:center}
+  .gstep p{font-size:.88rem;color:#4a423a;line-height:1.5}
+  .gnote{font-size:.84rem;line-height:1.5;border-radius:11px;padding:11px 13px;margin-top:13px}
+  .gnote b{font-weight:800}
+  .gwatch{background:#fef3c7;color:#8a5a00}
+  .gwatch b{color:#7a4f00}
+  .gwin{background:#dcfce7;color:#166534;margin-top:9px}
+  .gwin b{color:#14532d}
 
   /* celebrate */
   #celebrate{background:rgba(20,15,10,.6);backdrop-filter:blur(4px);justify-content:center;z-index:60}
@@ -246,22 +262,150 @@ function save(){localStorage.setItem(LS,JSON.stringify(S))}
 
 /* ================= SKILLS & LEVELS ================= */
 const SKILLS={
- sit:{name:'Sit',emoji:'🪑',lvl:1,tip:"Rocco's got this one. Ask once in a happy voice, reward the fast sits, and sprinkle it into walks and mealtimes to keep it sharp."},
- paw:{name:'Paw',emoji:'🐾',lvl:1,tip:'Solid. Hold out your hand, say "paw", reward. Try asking for the other paw too so he learns left and right.'},
- chin:{name:'Chin',emoji:'😌',lvl:1,tip:'A lovely calm trick. Rest his chin in your palm, say "chin", and each time wait a second longer before the treat.'},
- watch:{name:'Watch Me',emoji:'👀',lvl:1,tip:'The focus switch. Hold a treat up by your eyes, say "watch", reward eye contact. This makes every other cue easier — especially recall.'},
- down:{name:'Lie Down',emoji:'🛌',lvl:2,tip:'Lure a treat from his nose straight down to the floor, then slide it along the ground so he follows into a down. Reward the moment his elbows touch.'},
- stay:{name:'Stay',emoji:'✋',lvl:2,tip:'Ask for a sit, say "stay", take ONE step back, return and reward. Build up slowly — add distance, then time, then distractions, one at a time.'},
- leave:{name:'Leave It',emoji:'🚫',lvl:2,tip:'Cover a treat with your hand and say "leave it". The instant he backs off, reward from your OTHER hand. Teaches him that ignoring stuff pays off.'},
- wait:{name:'Wait',emoji:'⏸️',lvl:2,tip:'Use it at doors and before meals. Ask him to wait, count to two, then release with "okay". Brilliant impulse control for a bouncy pup.'},
- recall:{name:'Come Back',emoji:'🎯',lvl:3,priority:true,tip:"THE BIG ONE. Only ever call Rocco to good things. Say his name + \"come\" in an excited voice, then RUN backwards so he chases you. Massive reward and a party when he arrives. Never call him over to tell him off — that teaches him coming back is bad."},
- longline:{name:'Long-Line Recall',emoji:'🪢',lvl:3,priority:true,tip:'Before any off-lead, practise on a long training lead in the park. Let him wander, call him, reel in gently and reward big. Keeps him safe while recall becomes a habit.'},
- fetch:{name:'Fetch',emoji:'🎾',lvl:4,tip:"He already brings it back — great start! Keep it short and fun, and use TWO balls to keep him keen and set up the drop."},
- drop:{name:'Drop It',emoji:'🤲',lvl:4,priority:true,tip:'Trade up. When Rocco has the toy, show a tastier treat or a SECOND ball and say "drop". The moment he lets go, reward and give the toy straight back — dropping should feel like winning, not losing. Never chase him; that turns it into keep-away.'},
- roll:{name:'Roll Over',emoji:'🤸',lvl:5,tip:'From a lie-down, lure the treat around his shoulder so he rolls to follow it. Reward each half-turn and build the full roll bit by bit.'},
- spin:{name:'Spin',emoji:'🌀',lvl:5,tip:'Lure a treat in a circle by his nose and say "spin". Reward the full turn. Do it both ways for a proper party trick.'},
- highfive:{name:'High Five',emoji:'🖐️',lvl:5,tip:'Build on paw — hold your open hand a little higher, say "high five", reward the touch. Easy and cute once paw is solid.'},
- playdead:{name:'Bang!',emoji:'💥',lvl:5,tip:'From a down, lure his head to the side so he flops onto his hip, say "bang". Big reward for playing dead. Save this one for when the basics are rock solid.'}
+ sit:{name:'Sit',emoji:'🪑',lvl:1,
+   goal:`A rock-solid sit on the first ask.`,
+   steps:[`Hold a treat right at Rocco's nose so he can smell it.`,
+     `Slowly raise the treat up and back over his head. His nose follows it up, so his bottom goes down.`,
+     `The moment his bum touches the floor, say "yes!" and give the treat.`,
+     `After a few goes, say "sit" just before he does it, so the word starts to mean the action.`,
+     `Practise in different rooms and out on walks so it works everywhere, not just the kitchen.`],
+   tip:`If he jumps up at the treat, keep your hand lower and move slower — he should follow it, not leap for it.`,
+   win:`He sits the instant you say "sit", with no treat needed to lure him.`},
+ paw:{name:'Paw',emoji:'🐾',lvl:1,
+   goal:`A polite paw placed in your hand on cue.`,
+   steps:[`Ask Rocco to sit first.`,
+     `Hold a treat inside a closed fist near his chest.`,
+     `Wait. He'll sniff and lick, then paw at your hand to get it. The second his paw lifts, say "yes!" and open your hand.`,
+     `Start saying "paw" as he lifts it.`,
+     `Now offer an empty open hand, say "paw", and reward the paw with a treat from your other hand.`],
+   tip:`Don't grab his paw for him — let him offer it. That's what makes the trick stick.`,
+   win:`He lifts his paw into your open hand when you say "paw".`},
+ chin:{name:'Chin',emoji:'😌',lvl:1,
+   goal:`Rest his chin calmly in your hand — great for grooming and vet checks.`,
+   steps:[`Hold a flat, open palm just under his chin.`,
+     `Lure with a treat in your other hand so his head dips and his chin touches your palm.`,
+     `The moment his chin rests, say "yes!" and reward.`,
+     `Add the word "chin" as he does it.`,
+     `Slowly ask him to hold the chin a second or two longer before the treat.`],
+   tip:`Keep this one calm and quiet — it's a settle trick, so no excited voices.`,
+   win:`He rests his chin in your hand for a few seconds on the word "chin".`},
+ watch:{name:'Watch Me',emoji:'👀',lvl:1,
+   goal:`Instant eye contact — the focus switch that powers every other cue, especially recall.`,
+   steps:[`Hold a treat up between your eyes.`,
+     `Say "watch". The second Rocco's eyes meet yours, say "yes!" and treat.`,
+     `Repeat, then start hiding the treat behind your back first and reward just the look.`,
+     `Build up to 2–3 seconds of eye contact before the treat.`,
+     `Practise with a small distraction nearby (a toy on the floor).`],
+   tip:`Reward the eyes, not the sniffing — wait for real eye contact before you mark it.`,
+   win:`He looks up at your face when you say his name or "watch", even with things going on around him.`},
+ down:{name:'Lie Down',emoji:'🛌',lvl:2,
+   goal:`A relaxed lie-down on cue.`,
+   steps:[`Start with Rocco in a sit.`,
+     `Hold a treat at his nose, then lower it straight down to the floor between his front paws.`,
+     `Slide the treat slowly along the floor away from him — he'll follow it down into a lie-down.`,
+     `The moment his elbows touch the floor, say "yes!" and reward.`,
+     `Add the word "down" as he goes down, then start fading the treat lure.`],
+   tip:`If his bum pops back up, go slower and reward him halfway down first, then build to the full down.`,
+   win:`He drops into a down on the word alone.`},
+ stay:{name:'Stay',emoji:'✋',lvl:2,
+   goal:`Stays put until you release him.`,
+   steps:[`Ask for a sit or a down.`,
+     `Say "stay" and hold up a flat palm, then take ONE step back.`,
+     `Step straight back to him, say "yes!" and reward while he's still staying.`,
+     `Add a release word like "okay!" that tells him he can move now.`,
+     `Build up slowly: first more distance, then more time, then small distractions — only ONE of those at a time.`],
+   tip:`Always go back to reward him in position. Don't call him out of the stay to get his treat, or "stay" starts to mean "come".`,
+   win:`He holds a stay for 10+ seconds while you step a few metres away.`},
+ leave:{name:'Leave It',emoji:'🚫',lvl:2,
+   goal:`Ignore food, rubbish, or anything you tell him to leave.`,
+   steps:[`Put a boring treat in your closed fist and let Rocco sniff and paw at it.`,
+     `Say "leave it" and stay still. The instant he stops and pulls his nose away, say "yes!" and reward from your OTHER hand.`,
+     `Repeat with the treat on a flat open palm; close your hand if he lunges.`,
+     `Progress to a treat on the floor, covering it with your hand or foot if he dives in.`,
+     `Build up to walking past dropped food while he's on the lead.`],
+   tip:`He never gets the thing he "left" — the reward always comes from you instead. That's the whole deal.`,
+   win:`He looks away from something the moment you say "leave it".`},
+ wait:{name:'Wait',emoji:'⏸️',lvl:2,
+   goal:`Pauses at doors, the car, and his food bowl.`,
+   steps:[`At a door, put your hand on the handle and say "wait".`,
+     `If he holds still for a second, say "okay" and let him through — going through is the reward.`,
+     `If he barges, calmly close the door and try again.`,
+     `Do the same at his food bowl: lower it, say "wait", and only put it down when he's still.`,
+     `Slowly stretch the wait out to a few seconds.`],
+   tip:`Use real-life moments (walks, meals) as the sessions — the thing he wants IS the reward.`,
+   win:`He pauses and waits for your "okay" at doors and mealtimes.`},
+ recall:{name:'Come Back',emoji:'🎯',lvl:3,priority:true,
+   goal:`Comes back fast and happy every single time. This is the most important skill of all.`,
+   steps:[`Start indoors or in the garden with zero distractions and amazing treats (chicken or cheese).`,
+     `Say Rocco's name + "come!" in a bright, excited voice.`,
+     `The instant he moves toward you, cheer him on, then RUN backwards a few steps so he chases you.`,
+     `When he reaches you, throw a PARTY: several treats, big fuss, a game. Coming back must be the best thing that ever happens.`,
+     `Do 5–10 easy reps a day before you ever try it with distractions around.`],
+   tip:`NEVER call him over to do something he dislikes (bath, nail trim, end of playtime), and never tell him off when he comes back — even if he took ages. Punishing a return teaches him not to come at all.`,
+   win:`He spins round and races back the moment he hears "come", even mid-sniff.`},
+ longline:{name:'Long-Line Recall',emoji:'🪢',lvl:3,priority:true,
+   goal:`Reliable recall outdoors, safely — the bridge to going off-lead.`,
+   steps:[`Clip a long training line (5–10m) to his harness (not his collar) in a park or field.`,
+     `Let him wander and sniff out to the end of the line.`,
+     `Say his name + "come!" in your happy recall voice, and reward hugely when he arrives.`,
+     `If he ignores you, gently gather the line in as you call, then reward like mad when he reaches you — never yank.`,
+     `Over weeks, add distractions (other dogs at a distance) and only drop the line once he's rock solid.`],
+   tip:`The long line is a safety net, not a steering wheel. You're building his choice to come back — not dragging him in.`,
+   win:`He recalls past mild distractions on the long line, ready to earn off-lead freedom.`},
+ fetch:{name:'Fetch',emoji:'🎾',lvl:4,
+   goal:`Brings the toy all the way back — and sets up the drop.`,
+   steps:[`Throw a toy a short distance and cheer when Rocco grabs it.`,
+     `As he picks it up, call him back excitedly and reward him for coming — even before he drops it.`,
+     `Use TWO identical balls: when he comes back, show the second ball so the first one matters less.`,
+     `Keep throws short and stop while he's still keen — 5 or 6 throws, not 50.`,
+     `Once he reliably returns, start asking for "drop" (see the Drop It guide).`],
+   tip:`If he runs off with the toy, don't chase him — turn and jog the other way so he follows YOU.`,
+   win:`He chases, grabs, and trots back to you ready to go again.`},
+ drop:{name:'Drop It',emoji:'🤲',lvl:4,priority:true,
+   goal:`Lets go of the toy the moment you ask.`,
+   steps:[`Play with a toy Rocco likes, but keep a tastier treat (or a second ball) hidden.`,
+     `While he's holding the toy, hold the treat right by his nose and say "drop".`,
+     `He can't sniff the treat and hold the toy at once — the instant the toy leaves his mouth, say "yes!" and give the treat.`,
+     `Then give the toy straight back, so he learns dropping doesn't mean losing the fun.`,
+     `Repeat until you can say "drop" and he lets go before you even show the treat.`],
+   tip:`Never chase him or prise his mouth open — that makes him guard the toy. Always trade UP to something better.`,
+   win:`He spits the toy out on the word "drop", tail still wagging.`},
+ roll:{name:'Roll Over',emoji:'🤸',lvl:5,
+   goal:`A full roll-over.`,
+   steps:[`Start with Rocco in a lie-down.`,
+     `Hold a treat at his nose and move it slowly from his nose toward his shoulder, so he turns his head to follow.`,
+     `Keep guiding the treat over his back — his body rolls to follow his nose.`,
+     `Reward each stage at first (head turn, onto his side, full roll), then only the full roll.`,
+     `Add the word "roll" once he's flowing through the whole move.`],
+   tip:`Do it on a soft surface — a rug or grass — so he's comfy rolling over.`,
+   win:`He rolls all the way over when you say "roll" and circle your hand.`},
+ spin:{name:'Spin',emoji:'🌀',lvl:5,
+   goal:`Spins in a circle on cue.`,
+   steps:[`With Rocco standing, hold a treat at his nose.`,
+     `Lead his nose in a slow, full circle so his body follows round.`,
+     `Say "yes!" and reward when he completes the circle.`,
+     `Add the word "spin" as he turns, then shrink your hand circle until it's just a small hand signal.`,
+     `Teach the other direction with a different word, like "twist".`],
+   tip:`Go slow — if you move the treat too fast he'll lose it and give up.`,
+   win:`He spins a full circle on the word or a small hand twirl.`},
+ highfive:{name:'High Five',emoji:'🖐️',lvl:5,
+   goal:`A cute high five (builds straight off paw).`,
+   steps:[`Ask for "paw" a couple of times to warm up.`,
+     `Now hold your open hand a little higher, like a high-five target.`,
+     `When his paw hits your hand, say "yes!" and reward.`,
+     `Add the words "high five" and gradually raise your hand higher.`,
+     `Keep it snappy and fun — it's a party trick.`],
+   tip:`If he gets confused, drop back to a plain "paw" for one rep, then raise your hand again.`,
+   win:`He smacks your raised hand when you say "high five".`},
+ playdead:{name:'Bang!',emoji:'💥',lvl:5,
+   goal:`Flops onto his side and plays dead — a proper showstopper.`,
+   steps:[`Start in a lie-down.`,
+     `Hold a treat by his nose and move it slowly toward his shoulder and back, so he tips onto one hip, then onto his side.`,
+     `Reward the moment his shoulder touches the floor; build up to him lying flat.`,
+     `Add your cue — a word like "bang!" with a finger-gun signal if you fancy it.`,
+     `Slowly ask him to stay "dead" for a second or two before the treat.`],
+   tip:`This is an advanced one — only start it once Lie Down and Roll Over are solid, so he already understands being lured.`,
+   win:`He flops onto his side and holds it on your "bang" cue.`}
 };
 const LEVELS=[
  {n:1,name:'Puppy Basics',emoji:'🌱',skills:['sit','paw','chin','watch']},
@@ -416,15 +560,22 @@ const Focus={id:null,secs:0,timer:null,
       <div class="fEmoji">${sk.emoji}</div>
       <div class="fName">${sk.name}</div>
       <div class="fTag"><span class="mtag ${status(this.id)}">${sk.priority?'KEY SKILL':status(this.id)==='mastered'?'MASTERED':'LEARNING'} · ${S.mastery[this.id]}%</span></div>
-      <div class="fTip">${sk.tip}</div>
-      <div class="ftimer" id="fTimer">0:00<small>Session timer — aim for 3–5 min</small></div>
+      <div class="fGuide">
+        <p class="fGoal">🎯 <b>Goal:</b> ${sk.goal}</p>
+        <div class="gsteps-label">Step by step</div>
+        ${sk.steps.map((s,i)=>`<div class="gstep"><span class="sn">${i+1}</span><p>${s}</p></div>`).join('')}
+        <div class="gnote gwatch">⚠️ <b>Watch out:</b> ${sk.tip}</div>
+        <div class="gnote gwin">✅ <b>Nailed it when:</b> ${sk.win}</div>
+      </div>
+      <div class="ftimer" id="fTimer">0:00<small>Session timer — aim for 3–5 min, keep it fun</small></div>
       <button class="timerbtn" id="fBtn" onclick="Focus.toggle()">▶ Start timer</button>
-      <div class="rateq">How did ${esc(S.dog)} do?</div>
+      <div class="rateq">How did ${esc(S.dog)} do today?</div>
       <div class="rates">
         <button onclick="Focus.rate(8)"><span class="re">🌟</span>Nailed it</button>
         <button onclick="Focus.rate(4)"><span class="re">👍</span>Getting there</button>
         <button onclick="Focus.rate(1)"><span class="re">🤔</span>Needs work</button>
       </div>`;
+    const fm=document.getElementById('focusMain');if(fm)fm.scrollTop=0;
   },
   toggle(){
     const btn=document.getElementById('fBtn');
