@@ -252,14 +252,18 @@ const defaultState=()=>({
   setup:false, dog:'Rocco', trainer:'James', parent:'Dad', parentPhone:'',
   streak:0, bestStreak:0, lastDay:null, totalDays:0, earned:0,
   history:{}, rewards:[], today:{date:'',done:[]},
-  mastery:{sit:92,paw:88,chin:85,watch:45,down:55,stay:25,leave:20,wait:30,
-    recall:10,longline:5,fetch:65,drop:15,roll:40,spin:15,highfive:30,playdead:8,
-    loose:15,heel:5,settle:20,whistle:0,stop:0,give:10,tidy:0,bow:0,
-    touch:5,weave:0,findit:5,greet:10,proof:0,recalldist:0,showtime:0}
+  mastery:{sit:0,paw:0,chin:0,watch:0,down:0,stay:0,leave:0,wait:0,
+    recall:0,longline:0,fetch:0,drop:0,roll:0,spin:0,highfive:0,playdead:0,
+    loose:0,heel:0,settle:0,whistle:0,stop:0,give:0,tidy:0,bow:0,
+    touch:0,weave:0,findit:0,greet:0,proof:0,recalldist:0,showtime:0}
 });
 let S=load();
 function load(){try{const s=Object.assign(defaultState(),JSON.parse(localStorage.getItem(LS)||'{}'));
-  s.mastery=Object.assign(defaultState().mastery,s.mastery||{});return s;}catch(e){return defaultState()}}
+  // mastery starts at 0 and only grows from real logged training.
+  // mv migration: reset any old seeded values once, then merge real progress on top.
+  if(s.mv===2){s.mastery=Object.assign({},defaultState().mastery,s.mastery||{});}
+  else{s.mastery=Object.assign({},defaultState().mastery);s.mv=2;}
+  return s;}catch(e){return defaultState()}}
 function save(){localStorage.setItem(LS,JSON.stringify(S))}
 
 /* ================= SKILLS & LEVELS ================= */
