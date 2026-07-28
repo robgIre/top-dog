@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#16a34a">
+<meta name="description" content="Top Dog — Rocco's daily training app. Levels, streaks and rewards to make training fun.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Top Dog">
+<title>Top Dog — Rocco's Training</title>
+<style>
+  :root{
+    --bg:#fff7ee; --card:#ffffff; --card2:#fbf3e7; --ink:#2b2320; --mut:#8c8177; --mut2:#b3a696;
+    --line:#f0e6d8; --green:#16a34a; --green2:#22c55e; --amber:#f59e0b; --orange:#f97316; --gold:#eab308;
+    --grad:linear-gradient(135deg,#22c55e,#16a34a); --gradA:linear-gradient(135deg,#fbbf24,#f97316);
+    --r:20px; font-size:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Nunito,Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;overscroll-behavior:none}
+  body{max-width:520px;margin:0 auto;min-height:100vh}
+  h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.01em}
+  p{margin:0;line-height:1.5}
+  button{font-family:inherit;cursor:pointer;border:none;color:inherit}
+  .hide{display:none!important}
+  img{display:block}
+
+  /* header */
+  .head{display:flex;align-items:center;gap:11px;padding:16px 18px 12px;position:sticky;top:0;z-index:20;
+    background:rgba(255,247,238,.92);backdrop-filter:blur(12px)}
+  .head .av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--green2)}
+  .head .ht{flex:1}
+  .head .ht h1{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
+  .head .ht h1 b{color:var(--green)}
+  .head .ht p{font-size:.72rem;color:var(--mut);font-weight:700;letter-spacing:.02em}
+  .head .cog{background:var(--card);border:1px solid var(--line);border-radius:11px;width:38px;height:38px;font-size:1rem;color:var(--mut)}
+
+  #view{padding:4px 18px 120px}
+  .view{animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .section-title{font-size:.76rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut2);font-weight:800;margin:22px 2px 10px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px;
+    box-shadow:0 4px 18px rgba(120,90,50,.05)}
+
+  /* hero */
+  .hero{padding:0;overflow:hidden;position:relative}
+  .hero .photo{width:100%;height:210px;object-fit:cover}
+  .hero .cap{position:absolute;left:0;right:0;bottom:0;padding:34px 18px 14px;color:#fff;
+    background:linear-gradient(to top,rgba(0,0,0,.7),transparent)}
+  .hero .cap h2{font-size:1.5rem;font-weight:900}
+  .hero .cap p{font-size:.85rem;opacity:.92;margin-top:2px}
+  .rankbar{height:8px;background:rgba(255,255,255,.3);border-radius:5px;margin-top:9px;overflow:hidden}
+  .rankbar i{display:block;height:100%;background:var(--gradA)}
+
+  .chips{display:flex;gap:10px;margin:14px 0 2px}
+  .pill{flex:1;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px 10px;text-align:center}
+  .pill .n{font-size:1.5rem;font-weight:900;line-height:1}
+  .pill .n.g{color:var(--green)} .pill .n.a{color:var(--orange)}
+  .pill .l{font-size:.66rem;color:var(--mut2);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+  /* reward progress */
+  .rew{background:var(--gradA);color:#fff;border:none}
+  .rew h3{font-size:1.02rem}
+  .rew .rp{font-size:.85rem;opacity:.95;margin-top:3px}
+  .rbar{height:10px;background:rgba(255,255,255,.35);border-radius:6px;margin-top:12px;overflow:hidden}
+  .rbar i{display:block;height:100%;background:#fff;transition:width .5s}
+  .rdots{display:flex;justify-content:space-between;margin-top:8px;font-size:.72rem;font-weight:800}
+
+  /* drill / skill rows */
+  .drill{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);
+    border-radius:15px;padding:13px 14px;margin-bottom:10px;transition:all .15s}
+  .drill:active{transform:scale(.99)}
+  .drill.done{background:#f0fbf3;border-color:#bbe8c9}
+  .drill .em{width:44px;height:44px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:22px;flex:none}
+  .drill.done .em{background:#d6f3df}
+  .drill .bd{flex:1;min-width:0}
+  .drill .bd h4{font-size:1.02rem}
+  .drill .bd p{font-size:.76rem;color:var(--mut);margin-top:2px}
+  .drill .rt{font-size:1.4rem;color:var(--mut2)}
+  .drill.done .rt{color:var(--green)}
+  .prio{display:inline-block;background:#fee2e2;color:#dc2626;font-size:.6rem;font-weight:900;letter-spacing:.06em;
+    padding:2px 7px;border-radius:6px;margin-left:6px;vertical-align:middle}
+  .mbar{height:6px;background:var(--card2);border-radius:4px;overflow:hidden;margin-top:7px}
+  .mbar i{display:block;height:100%;background:var(--grad)}
+  .mtag{font-size:.66rem;font-weight:800;padding:2px 8px;border-radius:7px}
+  .mtag.mastered{background:#dcfce7;color:#15803d}
+  .mtag.learning{background:#fef3c7;color:#b45309}
+  .mtag.priority{background:#fee2e2;color:#dc2626}
+
+  /* level */
+  .level{margin-bottom:16px}
+  .level .lh{display:flex;align-items:center;gap:11px;margin:0 2px 10px}
+  .level .lh .le{font-size:1.5rem}
+  .level .lh h3{flex:1;font-size:1.05rem}
+  .level .lh .badge{font-size:.66rem;font-weight:900;padding:4px 9px;border-radius:8px;background:var(--card2);color:var(--mut2)}
+  .level .lh .badge.on{background:var(--grad);color:#fff}
+
+  .btn{display:block;width:100%;background:var(--grad);color:#fff;font-weight:800;font-size:1rem;padding:16px;
+    border-radius:15px;box-shadow:0 8px 22px rgba(22,163,74,.3);transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.amber{background:var(--gradA);box-shadow:0 8px 22px rgba(249,115,22,.3)}
+  .btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+
+  .coach summary{font-weight:800;font-size:.95rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+  .coach summary::-webkit-details-marker{display:none}
+  .coach[open] summary .cx{transform:rotate(45deg)}
+  .coach .cx{color:var(--mut2);transition:transform .2s}
+  .coach ol{margin:14px 0 2px;padding-left:20px}
+  .coach li{margin:9px 0;font-size:.86rem;color:#5a5148;line-height:1.5}
+  .coach li b{color:var(--ink)}
+
+  .rewlist>div{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-weight:700}
+  .rewlist>div:last-child{border-bottom:none}
+  .rewlist .amt{color:var(--green);font-weight:900}
+  .rewlist .dt{color:var(--mut2);font-size:.78rem;font-weight:700}
+
+  /* nav */
+  .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
+    background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(3,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:30}
+  .nav button{background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--mut2);font-size:.68rem;font-weight:800}
+  .nav button .ni{font-size:20px;line-height:1}
+  .nav button.active{color:var(--green)}
+
+  /* overlays */
+  .ov{position:fixed;inset:0;z-index:50;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:0 22px}
+  #focus{background:linear-gradient(160deg,#e9f9ee,#fff7ee)}
+  .ov-top{display:flex;justify-content:space-between;align-items:center;padding:20px 0 6px}
+  .ov-top .x{background:rgba(0,0,0,.06);width:38px;height:38px;border-radius:50%;font-size:1.1rem;color:var(--ink)}
+  .ov-main{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .fEmoji{font-size:64px;text-align:center;margin-bottom:8px}
+  .fName{font-size:1.7rem;font-weight:900;text-align:center;margin-bottom:4px}
+  .fTag{text-align:center;margin-bottom:16px}
+  .fTip{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;font-size:.95rem;
+    line-height:1.6;color:#4a423a;box-shadow:0 6px 20px rgba(120,90,50,.07)}
+  .fTip b{color:var(--ink)}
+  .ftimer{text-align:center;font-size:2.6rem;font-weight:900;font-variant-numeric:tabular-nums;margin:18px 0 6px}
+  .ftimer small{display:block;font-size:.72rem;color:var(--mut);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .timerbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 18px;font-weight:800;color:var(--ink);margin:0 auto;display:block}
+  .rateq{text-align:center;font-weight:800;margin:18px 0 10px}
+  .rates{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-bottom:30px}
+  .rates button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 6px;font-weight:800;font-size:.78rem}
+  .rates button .re{font-size:24px;display:block;margin-bottom:5px}
+  .rates button:active{transform:scale(.97)}
+
+  /* celebrate */
+  #celebrate{background:rgba(20,15,10,.6);backdrop-filter:blur(4px);justify-content:center;z-index:60}
+  .celcard{background:var(--card);border-radius:24px;padding:30px 24px;text-align:center;position:relative;overflow:hidden}
+  .celcard .big{font-size:64px}
+  .celcard h2{font-size:1.6rem;margin:6px 0}
+  .celcard p{color:var(--mut);font-size:.92rem;margin-bottom:18px}
+  .celcard .money{font-size:2.6rem;font-weight:900;color:var(--green);margin:4px 0 10px}
+  #confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  #confetti span{position:absolute;top:-30px;font-size:20px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(120vh) rotate(540deg);opacity:.2}}
+
+  /* onboarding */
+  #onboard{background:linear-gradient(160deg,#e9f9ee,#fff7ee);z-index:70}
+  #onboard .ob-main{flex:1;display:flex;flex-direction:column;justify-content:center}
+  #onboard img{width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid var(--green2);margin:0 auto 18px}
+  #onboard h2{font-size:1.7rem;text-align:center}
+  #onboard p.lead{color:var(--mut);text-align:center;margin:8px 0 22px}
+  .ob-field{margin-bottom:14px}
+  .ob-field label{font-size:.74rem;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+  .ob-field input{width:100%;margin-top:6px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;
+    padding:14px;font-size:1rem;font-family:inherit;color:var(--ink)}
+  .ob-field input:focus{outline:none;border-color:var(--green2)}
+  #onboard .ob-foot{padding:10px 0 34px}
+  .hint{font-size:.72rem;color:var(--mut2);margin-top:5px}
+
+  #toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;font-size:.85rem;z-index:65;
+    transition:all .3s;pointer-events:none;max-width:90%;text-align:center}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="onboard" class="ov hide">
+  <div class="ob-main">
+    <img src="rocco.jpg" alt="Rocco">
+    <h2>Welcome to <span style="color:var(--green)">Top Dog</span> 🐾</h2>
+    <p class="lead">Rocco's daily training buddy. Train a little every day, keep your streak, earn rewards!</p>
+    <div class="ob-field"><label>Dog's name</label><input id="obDog" value="Rocco"></div>
+    <div class="ob-field"><label>Your name</label><input id="obTrainer" value="James"></div>
+    <div class="ob-field"><label>Grown-up to tell (name)</label><input id="obParent" value="Dad"></div>
+    <div class="ob-field"><label>Their mobile (optional)</label><input id="obPhone" type="tel" placeholder="e.g. 087 123 4567" inputmode="tel">
+      <div class="hint">Lets you text them your streak from the app. You can leave this blank.</div></div>
+  </div>
+  <div class="ob-foot"><button class="btn" onclick="finishOnboard()">Let's train Rocco! 🎾</button></div>
+</div>
+
+<!-- FOCUS (practise a drill) -->
+<div id="focus" class="ov hide">
+  <div class="ov-top"><button class="x" onclick="Focus.close()">✕</button><span style="font-weight:800;color:var(--mut)">Training drill</span><span style="width:38px"></span></div>
+  <div class="ov-main" id="focusMain"></div>
+</div>
+
+<!-- CELEBRATE -->
+<div id="celebrate" class="ov hide">
+  <div class="celcard" id="celCard"></div>
+  <div id="confetti"></div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hide">
+  <div class="head">
+    <img src="rocco.jpg" class="av" alt="Rocco">
+    <div class="ht"><h1>TOP <b>DOG</b></h1><p id="hSub">Rocco's training</p></div>
+    <button class="cog" onclick="resetAll()">⚙︎</button>
+  </div>
+  <div id="view"></div>
+</div>
+
+<nav class="nav hide" id="nav">
+  <button data-v="today" class="active"><span class="ni">🏠</span>Today</button>
+  <button data-v="train"><span class="ni">🎓</span>Train</button>
+  <button data-v="rewards"><span class="ni">💶</span>Rewards</button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+/* ================= STATE ================= */
+const LS='td_state_v1';
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const epochDay=()=>Math.floor(Date.now()/86400000);
+const defaultState=()=>({
+  setup:false, dog:'Rocco', trainer:'James', parent:'Dad', parentPhone:'',
+  streak:0, bestStreak:0, lastDay:null, totalDays:0, earned:0,
+  history:{}, rewards:[], today:{date:'',done:[]},
+  mastery:{sit:92,paw:88,chin:85,watch:45,down:55,stay:25,leave:20,wait:30,
+    recall:10,longline:5,fetch:65,drop:15,roll:40,spin:15,highfive:30,playdead:8}
+});
+let S=load();
+function load(){try{const s=Object.assign(defaultState(),JSON.parse(localStorage.getItem(LS)||'{}'));
+  s.mastery=Object.assign(defaultState().mastery,s.mastery||{});return s;}catch(e){return defaultState()}}
+function save(){localStorage.setItem(LS,JSON.stringify(S))}
+
+/* ================= SKILLS & LEVELS ================= */
+const SKILLS={
+ sit:{name:'Sit',emoji:'🪑',lvl:1,tip:"Rocco's got this one. Ask once in a happy voice, reward the fast sits, and sprinkle it into walks and mealtimes to keep it sharp."},
+ paw:{name:'Paw',emoji:'🐾',lvl:1,tip:'Solid. Hold out your hand, say "paw", reward. Try asking for the other paw too so he learns left and right.'},
+ chin:{name:'Chin',emoji:'😌',lvl:1,tip:'A lovely calm trick. Rest his chin in your palm, say "chin", and each time wait a second longer before the treat.'},
+ watch:{name:'Watch Me',emoji:'👀',lvl:1,tip:'The focus switch. Hold a treat up by your eyes, say "watch", reward eye contact. This makes every other cue easier — especially recall.'},
+ down:{name:'Lie Down',emoji:'🛌',lvl:2,tip:'Lure a treat from his nose straight down to the floor, then slide it along the ground so he follows into a down. Reward the moment his elbows touch.'},
+ stay:{name:'Stay',emoji:'✋',lvl:2,tip:'Ask for a sit, say "stay", take ONE step back, return and reward. Build up slowly — add distance, then time, then distractions, one at a time.'},
+ leave:{name:'Leave It',emoji:'🚫',lvl:2,tip:'Cover a treat with your hand and say "leave it". The instant he backs off, reward from your OTHER hand. Teaches him that ignoring stuff pays off.'},
+ wait:{name:'Wait',emoji:'⏸️',lvl:2,tip:'Use it at doors and before meals. Ask him to wait, count to two, then release with "okay". Brilliant impulse control for a bouncy pup.'},
+ recall:{name:'Come Back',emoji:'🎯',lvl:3,priority:true,tip:"THE BIG ONE. Only ever call Rocco to good things. Say his name + \"come\" in an excited voice, then RUN backwards so he chases you. Massive reward and a party when he arrives. Never call him over to tell him off — that teaches him coming back is bad."},
+ longline:{name:'Long-Line Recall',emoji:'🪢',lvl:3,priority:true,tip:'Before any off-lead, practise on a long training lead in the park. Let him wander, call him, reel in gently and reward big. Keeps him safe while recall becomes a habit.'},
+ fetch:{name:'Fetch',emoji:'🎾',lvl:4,tip:"He already brings it back — great start! Keep it short and fun, and use TWO balls to keep him keen and set up the drop."},
+ drop:{name:'Drop It',emoji:'🤲',lvl:4,priority:true,tip:'Trade up. When Rocco has the toy, show a tastier treat or a SECOND ball and say "drop". The moment he lets go, reward and give the toy straight back — dropping should feel like winning, not losing. Never chase him; that turns it into keep-away.'},
+ roll:{name:'Roll Over',emoji:'🤸',lvl:5,tip:'From a lie-down, lure the treat around his shoulder so he rolls to follow it. Reward each half-turn and build the full roll bit by bit.'},
+ spin:{name:'Spin',emoji:'🌀',lvl:5,tip:'Lure a treat in a circle by his nose and say "spin". Reward the full turn. Do it both ways for a proper party trick.'},
+ highfive:{name:'High Five',emoji:'🖐️',lvl:5,tip:'Build on paw — hold your open hand a little higher, say "high five", reward the touch. Easy and cute once paw is solid.'},
+ playdead:{name:'Bang!',emoji:'💥',lvl:5,tip:'From a down, lure his head to the side so he flops onto his hip, say "bang". Big reward for playing dead. Save this one for when the basics are rock solid.'}
+};
+const LEVELS=[
+ {n:1,name:'Puppy Basics',emoji:'🌱',skills:['sit','paw','chin','watch']},
+ {n:2,name:'Good Manners',emoji:'🎓',skills:['down','stay','leave','wait']},
+ {n:3,name:'Recall Hero',emoji:'🦸',skills:['recall','longline']},
+ {n:4,name:'Fetch & Drop',emoji:'🎾',skills:['fetch','drop']},
+ {n:5,name:'Trick Star',emoji:'⭐',skills:['roll','spin','highfive','playdead']}
+];
+const MASTER=80;
+function status(id){const m=S.mastery[id];if(SKILLS[id].priority&&m<MASTER)return 'priority';return m>=MASTER?'mastered':'learning';}
+function levelDone(lv){return lv.skills.every(id=>S.mastery[id]>=MASTER);}
+function overall(){const v=Object.values(S.mastery);return Math.round(v.reduce((a,b)=>a+b,0)/v.length);}
+function rank(){const o=overall();return o>=88?'Superstar 🌟':o>=72?'Top Dog 🏆':o>=52?'Clever Dog 🧠':o>=32?'Good Boy 🐶':'Puppy in training 🐾';}
+
+/* today's plan: always the 2 priorities + 3 rotating */
+function plan(){
+  const rest=Object.keys(SKILLS).filter(id=>id!=='recall'&&id!=='drop');
+  const start=(epochDay()*3)%rest.length;
+  const rot=[rest[start],rest[(start+1)%rest.length],rest[(start+2)%rest.length]];
+  return ['recall','drop',...rot];
+}
+function ensureToday(){if(S.today.date!==todayKey()){S.today={date:todayKey(),done:[]};save();}}
+
+/* ================= VIEWS ================= */
+const V=document.getElementById('view');
+let currentView='today';
+
+function viewToday(){
+  ensureToday();
+  const p=plan(), done=S.today.done;
+  const doneCount=p.filter(id=>done.includes(id)).length;
+  const complete=!!S.history[todayKey()];
+  const nr=nextReward();
+  const pct=Math.round(nr.have/5*100);
+
+  V.innerHTML=`
+    <div class="card hero">
+      <img class="photo" src="rocco.jpg" alt="Rocco">
+      <div class="cap">
+        <h2>${complete?"Rocco's smashed it today! ✅":`Hi ${esc(S.trainer)}! Ready to train ${esc(S.dog)}?`}</h2>
+        <p>${rank()} · ${overall()}% trained</p>
+        <div class="rankbar"><i style="width:${overall()}%"></i></div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <div class="pill"><div class="n g">${S.streak}🔥</div><div class="l">Day streak</div></div>
+      <div class="pill"><div class="n a">€${S.earned}</div><div class="l">Treat fund</div></div>
+      <div class="pill"><div class="n">${doneCount}/${p.length}</div><div class="l">Today's drills</div></div>
+    </div>
+
+    <div class="card rew">
+      <h3>${nr.amount===5?'🎯 Next reward: €5':'🏆 Next reward: €10'}</h3>
+      <div class="rp">${complete&&doneCount===p.length?`Come back tomorrow to keep your ${S.streak}-day streak alive!`:nr.need===0?'Finish today to claim it!':`${nr.need} more day${nr.need===1?'':'s'} in a row to earn €${nr.amount}.`}</div>
+      <div class="rbar"><i style="width:${pct}%"></i></div>
+      <div class="rdots"><span>${nr.have}/5 days</span><span>€${nr.amount}</span></div>
+    </div>
+
+    <div class="section-title">Today's training plan</div>
+    ${p.map(id=>{const sk=SKILLS[id];const d=done.includes(id);return `
+      <div class="drill ${d?'done':''}" onclick="Focus.open('${id}')">
+        <div class="em">${sk.emoji}</div>
+        <div class="bd"><h4>${sk.name}${sk.priority?'<span class="prio">KEY</span>':''}</h4>
+          <p>${d?'Done today — nice work!':'Tap to see how, then train Rocco'}</p></div>
+        <div class="rt">${d?'✓':'›'}</div>
+      </div>`}).join('')}
+    ${doneCount<p.length?`<p style="text-align:center;color:var(--mut);font-size:.82rem;margin:8px 0 4px">Finish all ${p.length} drills to complete today and grow your streak 🔥</p>`:''}
+
+    <details class="card coach">
+      <summary>🦴 How to train Rocco (coach's tips) <span class="cx">＋</span></summary>
+      <ol>
+        <li><b>Keep it short & sweet.</b> 3–5 minutes, 2–3 times a day. Stop while he's still keen — a happy pup learns fastest.</li>
+        <li><b>Reward what you like.</b> Treats, praise, play. Cavapoos live to please, so positive reinforcement works brilliantly — never tell him off for getting it wrong.</li>
+        <li><b>Save the good stuff for the hard stuff.</b> Use high-value treats (chicken, cheese) for the biggies — recall and drop it.</li>
+        <li><b>One word, one cue.</b> Everyone in the house uses the same word ("come", "drop") so Rocco isn't confused.</li>
+        <li><b>Build up the 3 D's.</b> Distance, Duration, Distraction — add just one at a time.</li>
+        <li><b>Recall is sacred.</b> Always a party when he comes back, never a telling-off, and practise on a long line before off-lead.</li>
+        <li><b>End on a win.</b> Always finish with something he nails, so he can't wait for next time.</li>
+      </ol>
+    </details>
+  `;
+}
+
+function viewTrain(){
+  V.innerHTML=`<div class="section-title">Rocco's training journey</div>
+    <p style="color:var(--mut);font-size:.85rem;margin:0 2px 14px">Work through the levels. A skill turns <b style="color:var(--green)">Mastered</b> at ${MASTER}%. Tap any skill to practise it and tell us how he did.</p>`
+    + LEVELS.map(lv=>{
+      const done=levelDone(lv);
+      return `<div class="level">
+        <div class="lh"><span class="le">${lv.emoji}</span><h3>Level ${lv.n} · ${lv.name}</h3>
+          <span class="badge ${done?'on':''}">${done?'✓ COMPLETE':'IN PROGRESS'}</span></div>
+        ${lv.skills.map(id=>{const sk=SKILLS[id],m=S.mastery[id],st=status(id);return `
+          <div class="drill" onclick="Focus.open('${id}')">
+            <div class="em">${sk.emoji}</div>
+            <div class="bd"><h4>${sk.name}${sk.priority?'<span class="prio">KEY</span>':''}</h4>
+              <div class="mbar"><i style="width:${m}%"></i></div></div>
+            <span class="mtag ${st}">${st==='mastered'?'★ '+m+'%':st==='priority'?'NEEDS WORK':m+'%'}</span>
+          </div>`}).join('')}
+      </div>`;
+    }).join('');
+}
+
+function viewRewards(){
+  const nr=nextReward();const pct=Math.round(nr.have/5*100);
+  V.innerHTML=`
+    <div class="section-title">Treat fund</div>
+    <div class="card" style="text-align:center;padding:26px 18px">
+      <div style="font-size:.74rem;color:var(--mut2);font-weight:800;letter-spacing:.08em;text-transform:uppercase">Total earned</div>
+      <div style="font-size:3.4rem;font-weight:900;color:var(--green);line-height:1.1">€${S.earned}</div>
+      <div style="color:var(--mut);font-size:.85rem">from training ${esc(S.dog)} 🐾</div>
+    </div>
+
+    <div class="chips">
+      <div class="pill"><div class="n g">${S.streak}🔥</div><div class="l">Current streak</div></div>
+      <div class="pill"><div class="n">${S.bestStreak}</div><div class="l">Best streak</div></div>
+      <div class="pill"><div class="n">${S.totalDays}</div><div class="l">Total days</div></div>
+    </div>
+
+    <div class="card rew">
+      <h3>${nr.amount===5?'🎯 Next: €5 at a 5-day streak':'🏆 Next: €10 at a 10-day streak'}</h3>
+      <div class="rp">${nr.need===0?'Train today to claim it!':`${nr.need} more day${nr.need===1?'':'s'} to go!`}</div>
+      <div class="rbar"><i style="width:${pct}%"></i></div>
+    </div>
+
+    <div class="card" style="background:var(--card2)">
+      <p style="font-size:.85rem;color:#5a5148;line-height:1.55">💡 <b>How rewards work:</b> train ${esc(S.dog)} every day. A <b>5-day streak = €5</b>. Keep going to a <b>10-day streak = €10</b>. Then the streak resets and you start again. Miss a day and the streak goes back to zero — so don't break the chain!</p>
+    </div>
+
+    <button class="btn amber" onclick="shareProgress()">📲 Tell ${esc(S.parent)} my progress</button>
+
+    ${S.rewards.length?`<div class="section-title">Rewards earned</div><div class="card rewlist">
+      ${S.rewards.slice().reverse().map(r=>`<div><span>${r.milestone}-day streak 🔥</span><span class="dt">${r.date}</span><span class="amt">+€${r.amount}</span></div>`).join('')}
+    </div>`:'<p style="text-align:center;color:var(--mut2);font-size:.85rem;margin-top:18px">No rewards yet — your first €5 is 5 days away! 🐶</p>'}
+  `;
+}
+
+function nextReward(){
+  const s=S.streak;
+  if(s<5)return{amount:5,have:s,need:5-s};
+  return{amount:10,have:s-5,need:10-s};
+}
+function esc(t){return String(t||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+
+/* ================= FOCUS (practise) ================= */
+const Focus={id:null,secs:0,timer:null,
+  open(id){this.id=id;this.secs=0;clearInterval(this.timer);
+    document.getElementById('focus').classList.remove('hide');document.getElementById('nav').classList.add('hide');
+    this._render();},
+  _render(){
+    const sk=SKILLS[this.id];
+    document.getElementById('focusMain').innerHTML=`
+      <div class="fEmoji">${sk.emoji}</div>
+      <div class="fName">${sk.name}</div>
+      <div class="fTag"><span class="mtag ${status(this.id)}">${sk.priority?'KEY SKILL':status(this.id)==='mastered'?'MASTERED':'LEARNING'} · ${S.mastery[this.id]}%</span></div>
+      <div class="fTip">${sk.tip}</div>
+      <div class="ftimer" id="fTimer">0:00<small>Session timer — aim for 3–5 min</small></div>
+      <button class="timerbtn" id="fBtn" onclick="Focus.toggle()">▶ Start timer</button>
+      <div class="rateq">How did ${esc(S.dog)} do?</div>
+      <div class="rates">
+        <button onclick="Focus.rate(8)"><span class="re">🌟</span>Nailed it</button>
+        <button onclick="Focus.rate(4)"><span class="re">👍</span>Getting there</button>
+        <button onclick="Focus.rate(1)"><span class="re">🤔</span>Needs work</button>
+      </div>`;
+  },
+  toggle(){
+    const btn=document.getElementById('fBtn');
+    if(this.timer){clearInterval(this.timer);this.timer=null;btn.textContent='▶ Resume';}
+    else{btn.textContent='⏸ Pause';this.timer=setInterval(()=>{this.secs++;
+      const e=document.getElementById('fTimer');if(e)e.innerHTML=fmt(this.secs)+'<small>Session timer — aim for 3–5 min</small>';},1000);}
+  },
+  rate(pts){
+    clearInterval(this.timer);this.timer=null;
+    S.mastery[this.id]=Math.min(100,S.mastery[this.id]+pts);
+    ensureToday();
+    if(!S.today.done.includes(this.id))S.today.done.push(this.id);
+    save();
+    const wasComplete=!!S.history[todayKey()];
+    // check day completion
+    const p=plan();const allDone=p.every(id=>S.today.done.includes(id));
+    this.close(true);
+    if(allDone && !wasComplete){const r=completeDay();celebrate(r);}
+    else toast('Logged! '+SKILLS[this.id].name+' +'+pts+'% 🐾');
+  },
+  close(silent){clearInterval(this.timer);this.timer=null;
+    document.getElementById('focus').classList.add('hide');document.getElementById('nav').classList.remove('hide');
+    if(!silent)go(currentView);else go(currentView);}
+};
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+
+/* ================= DAY COMPLETE + REWARDS ================= */
+function completeDay(key){
+  key=key||todayKey();
+  if(S.history[key])return{reward:0,milestone:0,streak:S.streak,already:true};
+  S.history[key]=true;
+  if(S.lastDay){const d=Math.round((new Date(key)-new Date(S.lastDay))/86400000);S.streak=d===1?S.streak+1:1;}
+  else S.streak=1;
+  S.lastDay=key;S.totalDays=(S.totalDays||0)+1;
+  if(S.streak>(S.bestStreak||0))S.bestStreak=S.streak;
+  let reward=0,milestone=0;
+  if(S.streak===5){reward=5;milestone=5;}
+  else if(S.streak===10){reward=10;milestone=10;S.streak=0;}
+  if(reward){S.earned=(S.earned||0)+reward;(S.rewards=S.rewards||[]).push({date:key,amount:reward,milestone});}
+  save();
+  return {reward,milestone,streak:S.streak};
+}
+
+function celebrate(r){
+  const card=document.getElementById('celCard');
+  let html;
+  if(r.reward){
+    const msg=shareMsg(r.milestone,r.reward);
+    html=`<div class="big">${r.milestone===10?'🏆':'🎉'}</div>
+      <h2>${r.milestone}-day streak!</h2>
+      <div class="money">+ €${r.reward}</div>
+      <p>${r.milestone===10?`Amazing! ${esc(S.dog)} is a Top Dog. Your streak resets now — go again for another €5!`:`You earned €${r.reward} for training ${esc(S.dog)} every day. Keep going to a 10-day streak for €10!`}</p>
+      <button class="btn amber" onclick="tellParent(${JSON.stringify(msg).replace(/"/g,'&quot;')})">📲 Tell ${esc(S.parent)}!</button>
+      <button class="btn ghost" style="margin-top:10px" onclick="closeCelebrate()">Nice!</button>`;
+  } else {
+    html=`<div class="big">✅</div>
+      <h2>Day complete!</h2>
+      <p>Great job — that's a <b>${r.streak}-day streak</b>. ${5-r.streak>0?(5-r.streak)+' more day'+(5-r.streak===1?'':'s')+' to €5!':''}</p>
+      <button class="btn" onclick="closeCelebrate()">Woohoo! 🐾</button>`;
+  }
+  card.innerHTML=html;
+  document.getElementById('celebrate').classList.remove('hide');
+  document.getElementById('nav').classList.add('hide');
+  confetti();
+}
+function closeCelebrate(){document.getElementById('celebrate').classList.add('hide');
+  document.getElementById('nav').classList.remove('hide');go(currentView);}
+function confetti(){
+  const c=document.getElementById('confetti');c.innerHTML='';
+  const em=['🎉','🦴','🐾','🎾','⭐','💶','🐶'];
+  for(let i=0;i<44;i++){const s=document.createElement('span');
+    s.textContent=em[Math.floor(Math.random()*em.length)];
+    s.style.left=(Math.random()*100)+'%';
+    s.style.animationDuration=(2.2+Math.random()*2.2)+'s';
+    s.style.animationDelay=(Math.random()*0.6)+'s';
+    s.style.fontSize=(16+Math.random()*16)+'px';
+    c.appendChild(s);}
+  setTimeout(()=>{c.innerHTML='';},4600);
+}
+
+/* ================= SHARE ================= */
+function shareMsg(milestone,amount){
+  return `🐾 ${S.trainer} just hit a ${milestone}-day training streak with ${S.dog} on Top Dog — that's €${amount} earned! 🎉`;
+}
+function shareProgress(){
+  const msg=`🐾 Top Dog update: ${S.trainer} is on a ${S.streak}-day streak training ${S.dog}, with €${S.earned} earned so far and ${S.totalDays} days trained. ${S.dog} is ${overall()}% trained (${rank()})!`;
+  tellParent(msg);
+}
+function tellParent(text){
+  if(navigator.share){navigator.share({title:'Top Dog',text:text}).catch(()=>{});}
+  else{const num=(S.parentPhone||'').replace(/\s/g,'');location.href='sms:'+num+'?&body='+encodeURIComponent(text);}
+}
+
+/* ================= NAV ================= */
+function go(v){currentView=v;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  ({today:viewToday,train:viewTrain,rewards:viewRewards}[v])();
+  window.scrollTo(0,0);}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+
+/* ================= TOAST ================= */
+let tt;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),2000);}
+
+/* ================= ONBOARD / BOOT ================= */
+function finishOnboard(){
+  S.dog=(document.getElementById('obDog').value||'Rocco').trim();
+  S.trainer=(document.getElementById('obTrainer').value||'James').trim();
+  S.parent=(document.getElementById('obParent').value||'Dad').trim();
+  S.parentPhone=(document.getElementById('obPhone').value||'').trim();
+  S.setup=true;save();
+  document.getElementById('onboard').classList.add('hide');boot();
+}
+function boot(){
+  document.getElementById('app').classList.remove('hide');
+  document.getElementById('nav').classList.remove('hide');
+  document.getElementById('hSub').textContent=S.dog+"'s training";
+  if(S.lastDay){const d=Math.round((new Date(todayKey())-new Date(S.lastDay))/86400000);if(d>1)S.streak=0;}
+  ensureToday();save();go('today');
+}
+function resetAll(){
+  if(confirm('Reset everything — streak, rewards and training progress? This cannot be undone.')){
+    localStorage.removeItem(LS);S=load();
+    document.getElementById('app').classList.add('hide');document.getElementById('nav').classList.add('hide');
+    document.getElementById('onboard').classList.remove('hide');
+  }
+}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+if(S.setup)boot(); else document.getElementById('onboard').classList.remove('hide');
+</script>
+</body>
+</html>
